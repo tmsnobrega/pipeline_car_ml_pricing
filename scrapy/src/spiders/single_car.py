@@ -5,7 +5,7 @@ class SingleCarSpider(scrapy.Spider):
     name = "single_car"
 
     start_urls = [
-        "https://www.autoscout24.com/offers/tesla-model-3-75-kwh-long-range-dual-motor-awd-b2b-only-electric-black-014864ad-f4ae-4e40-8f82-da55d12bed62?sort=standard&desc=0&lastSeenGuidPresent=false&cldtidx=1&position=1&search_id=138xpk8a146&source_otp=nfm&ap_tier=t50&source=listpage_search-results&order_bucket=0&new_taxonomy_available=false&mia_tier=t50&relevance_adjustment=sponsored&applied_mia_tier=t50&boosting_product=mia&topspot-algorithm=nfm-default&topspot-dealer-id=44151164"
+        "https://www.autoscout24.com/offers/volkswagen-golf-1-2-tsi-comfortline-carplay-cruise-dsg-gasoline-black-a3abb271-4826-46ed-a778-70d9067e8d52?sort=standard&desc=0&lastSeenGuidPresent=false&cldtidx=6&position=6&search_id=173oh9htby5&source_otp=t50&ap_tier=t50&source=listpage_search-results&order_bucket=6&new_taxonomy_available=false&mia_tier=t50&boosting_product=mia&relevance_adjustment=boost&applied_mia_tier=t50"
     ]
 
     def parse(self, response):
@@ -53,7 +53,9 @@ class SingleCarSpider(scrapy.Spider):
             "cylinders": vehicle_detailed_data.get("Cylinders"),
             "empty_weight": vehicle_detailed_data.get("Empty weight"),
             "emission_class": vehicle_detailed_data.get("Emission class"),
+            "fuel_comsumption": vehicle_detailed_data.get("Fuel consumption"),
             "co2_emission": vehicle_detailed_data.get("CO₂-emissions"),
+            "co2_emission_test": response.css("dt:contains('CO₂-emissions') + dd::text").get(default=None),
             "eletric_range": vehicle_detailed_data.get("Electric Range"),
             "car_color": vehicle_detailed_data.get("Colour"),
             "manufacturer_color": vehicle_detailed_data.get("Manufacturer colour"),
@@ -73,4 +75,4 @@ class SingleCarSpider(scrapy.Spider):
         }
 
 # cd scrapy/src
-# scrapy crawl single_car -o ../../single_car.jsonl
+# scrapy crawl single_car -o ../../data/raw/single_car.jsonl
