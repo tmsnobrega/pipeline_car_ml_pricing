@@ -2,4 +2,4 @@
 
 cd scrapy/src
 
-scrapy crawl test_single_car -o ../../data/raw/test_single_car.jsonl
+scrapy crawl single_car -o ../../data/raw/single_car.jsonl
