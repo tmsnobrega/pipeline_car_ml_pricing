@@ -5,13 +5,13 @@ class SingleCarSpider(scrapy.Spider):
     name = "test_single_car"
 
     start_urls = [
-        "https://www.autoscout24.com/offers/audi-a7-sportback-50-tfsi-e-quattro-pro-line-s-panoramad-electric-gasoline-blue-5aa0056b-da9a-481b-9895-4b01a4aa2fdc"
+        "https://www.autoscout24.com/offers/audi-a7-sportback-50-tfsi-e-quattro-plug-in-300pk-pano-mat-electric-gasoline-grey-b18ed873-a64b-4504-8811-7a27affb947f?ipc=recommendation&ipl=detailpage-engine-itemBased&source=detailpage_recommender&position=3&source_otp=t20&ap_tier=t20&mia_tier=t20&boosting_product=none&relevance_adjustment=organic&applied_mia_tier=t20"
     ]
 
     def parse(self, response):
         """Extract detailed car information safely, avoiding field misalignment."""
 
-        # Extract overview data
+        # Extract detailed data
         overview_containers = response.css("div.VehicleOverview_itemContainer__XSLWi")
         vehicle_overview_data = {}
 
@@ -21,15 +21,16 @@ class SingleCarSpider(scrapy.Spider):
             if label_overview:
                 vehicle_overview_data[label_overview.strip()] = value_overview.strip() if value_overview else None
 
-        # Extract labels (dt elements)
-        data_labels = response.css("dt.DataGrid_defaultDtStyle__soJ6R::text").getall()
+        # Extract overview data
+        detailed_containers = response.css("div.DetailsSection_childrenSection__aElbi")
+        vehicle_detailed_data = {}
 
-        # Extract values (dd elements)
-        data_values = response.css("dd.DataGrid_defaultDdStyle__3IYpG.DataGrid_fontBold__RqU01::text").getall()
-
-        # Ensuring correct mapping of labels to values
-        vehicle_detailed_data = {label: value for label, value in zip(data_labels, data_values)}
-            
+        for detailed in detailed_containers:
+            label_detailed = [label.strip() for label in detailed.css("dt.DataGrid_defaultDtStyle__soJ6R::text").getall()]
+            value_detailed = [value.strip() for value in detailed.css("dd.DataGrid_defaultDdStyle__3IYpG.DataGrid_fontBold__RqU01::text").getall()]
+            if label_detailed:
+                for label, value in zip(label_detailed, value_detailed):
+                    vehicle_detailed_data[label] = " ".join(value) if isinstance(value, list) else value if value else None
 
         yield {
             "manufacturer": response.css("span.StageTitle_boldClassifiedInfo__sQb0l::text").get(),
