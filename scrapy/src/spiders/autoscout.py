@@ -1,14 +1,57 @@
 import scrapy
 from datetime import datetime
 
-class SingleCarSpider(scrapy.Spider):
-  name = "single_car_test"
+class AutoscoutCarSpider(scrapy.Spider):
+  name = "autoscout"
 
-  start_urls = [
-      "https://www.autoscout24.com/offers/volkswagen-golf-1-2-tsi-comfortline-carplay-cruise-dsg-gasoline-black-a3abb271-4826-46ed-a778-70d9067e8d52?sort=standard&desc=0&lastSeenGuidPresent=false&cldtidx=6&position=6&search_id=173oh9htby5&source_otp=t50&ap_tier=t50&source=listpage_search-results&order_bucket=6&new_taxonomy_available=false&mia_tier=t50&boosting_product=mia&relevance_adjustment=boost&applied_mia_tier=t50"
-  ]
+  # Define search variables
+  max_pages = 2
+  adage = 2
+
+  # Define a dictionary of manufacturers & models
+  manufacturers_models = {
+        "audi": ["a4"],
+        "bmw": ["330", "340"]
+    }
+
+  def start_requests(self):
+    self.current_page = 1
+    for manufacturer, models in self.manufacturers_models.items():
+      for model in models:
+        for page in range(1, self.max_pages + 1):
+          url = self.construct_url(manufacturer, model, page, adage=self.adage)
+          yield scrapy.Request(url=url, callback=self.parse, meta={"manufacturer": manufacturer, "model": model, "page": page})
+
+
+  def construct_url(self, manufacturer, model, page, adage=None):
+    url = f"https://www.autoscout24.com/lst/{manufacturer}/{model}?body=1%2C4%2C6&cy=NL&desc=1&fregfrom=2016&sort=age"
+
+    if adage:
+      url += f"&adage={adage}"
+
+    url += f"&page={page}"
+
+    return url
+
 
   def parse(self, response):
+    car_links = response.css("a.ListItem_title__ndA4s::attr(href)").getall()
+
+    for link in car_links:
+      absolute_url = response.urljoin(link)
+      yield scrapy.Request(url=absolute_url, callback=self.parse_car, meta=response.meta)
+
+    # Get the current page, manufacturer, and model from the response meta
+    current_page = response.meta["page"]
+    manufacturer = response.meta["manufacturer"]
+    model = response.meta["model"]
+
+    if current_page < self.max_pages:
+      next_page_url = self.construct_url(manufacturer, model, current_page + 1, self.adage)
+      yield scrapy.Request(url=next_page_url, callback=self.parse, meta={"manufacturer": manufacturer, "model": model, "page": current_page + 1})
+
+
+  def parse_car(self, response):
     # Extract overview data
     overview_containers = response.css("div.VehicleOverview_itemContainer__XSLWi")
     vehicle_overview_data = {}
@@ -79,3 +122,6 @@ class SingleCarSpider(scrapy.Spider):
         "listing_url": response.url,
         "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
     }
+
+# cd scrapy/src
+# scrapy crawl autoscout -o ../../data/raw/autoscout.jsonl
