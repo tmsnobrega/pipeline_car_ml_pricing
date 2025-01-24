@@ -1,36 +1,33 @@
 import scrapy
 from datetime import datetime
+from ..utils import load_project_variables
+
 
 class AutoscoutCarSpider(scrapy.Spider):
-  name = "autoscout"
+  name = "car_listing"
 
-  # Define search variables
-  max_pages = 2
-  adage = 2
+  # Load settings as a dictionary
+  settings = load_project_variables()
 
-  # Define a dictionary of manufacturers & models
-  manufacturers_models = {
-        "audi": ["a4"],
-        "bmw": ["330", "340"]
-    }
+  # Extract values correctly using dictionary keys
+  max_pages = settings["MAX_PAGES"]
+  adage = settings["AD_AGE"]
+  price_from = settings["PRICE_FROM"]
+  price_to = settings["PRICE_TO"]
+  year_from = settings["YEAR_FROM"]
+  manufacturers_models = settings["MANUFACTURERS_MODELS"]
 
   def start_requests(self):
     self.current_page = 1
     for manufacturer, models in self.manufacturers_models.items():
       for model in models:
         for page in range(1, self.max_pages + 1):
-          url = self.construct_url(manufacturer, model, page, adage=self.adage)
+          url = self.construct_url(manufacturer, model, self.year_from, self.price_from, self.price_to, self.adage, page)
           yield scrapy.Request(url=url, callback=self.parse, meta={"manufacturer": manufacturer, "model": model, "page": page})
 
 
-  def construct_url(self, manufacturer, model, page, adage=None):
-    url = f"https://www.autoscout24.com/lst/{manufacturer}/{model}?body=1%2C4%2C6&cy=NL&desc=1&fregfrom=2016&sort=age"
-
-    if adage:
-      url += f"&adage={adage}"
-
-    url += f"&page={page}"
-
+  def construct_url(self, manufacturer, model, year_from, price_from, price_to, adage, page):
+    url = f"https://www.autoscout24.com/lst/{manufacturer}/{model}?body=1%2C4%2C6&cy=NL&fregfrom={year_from}&pricefrom={price_from}&priceto={price_to}&adage={adage}&desc=1&sort=age&page={page}"
     return url
 
 
@@ -47,7 +44,7 @@ class AutoscoutCarSpider(scrapy.Spider):
     model = response.meta["model"]
 
     if current_page < self.max_pages:
-      next_page_url = self.construct_url(manufacturer, model, current_page + 1, self.adage)
+      next_page_url = self.construct_url(manufacturer, model, self.year_from, self.price_from, self.price_to, self.adage, current_page + 1)
       yield scrapy.Request(url=next_page_url, callback=self.parse, meta={"manufacturer": manufacturer, "model": model, "page": current_page + 1})
 
 
@@ -120,8 +117,8 @@ class AutoscoutCarSpider(scrapy.Spider):
 
         # Metadata
         "listing_url": response.url,
-        "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
     }
 
 # cd scrapy/src
-# scrapy crawl autoscout -o ../../data/raw/autoscout.jsonl
+# scrapy crawl car_listing -o ../../data/raw/car_listing.jsonl
