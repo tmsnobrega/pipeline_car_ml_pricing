@@ -2,7 +2,6 @@ import scrapy
 from datetime import datetime
 from ..utils import load_project_variables
 
-
 class AutoscoutCarSpider(scrapy.Spider):
   name = "car_listing"
 
