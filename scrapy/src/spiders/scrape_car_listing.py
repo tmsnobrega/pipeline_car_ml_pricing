@@ -3,7 +3,7 @@ from datetime import datetime
 from ..utils import load_project_variables
 
 class AutoscoutCarSpider(scrapy.Spider):
-  name = "car_listing"
+  name = "scrape_car_listing"
 
   # Load settings as a dictionary
   settings = load_project_variables()
@@ -26,7 +26,7 @@ class AutoscoutCarSpider(scrapy.Spider):
 
 
   def construct_url(self, manufacturer, model, year_from, price_from, price_to, adage, page):
-    url = f"https://www.autoscout24.com/lst/{manufacturer}/{model}?body=1%2C4%2C6&cy=NL&fregfrom={year_from}&pricefrom={price_from}&priceto={price_to}&adage={adage}&desc=1&sort=age&page={page}"
+    url = f"https://www.autoscout24.com/lst/{manufacturer}/{model}?body=1%2C4%2C6&cy=NL&gear=A%2CM&fregfrom={year_from}&pricefrom={price_from}&priceto={price_to}&adage={adage}&desc=1&sort=age&page={page}"
     return url
 
 
@@ -84,7 +84,7 @@ class AutoscoutCarSpider(scrapy.Spider):
         # Vehicle history
         "previous_owners": response.css("dt:contains('Previous owner') + dd::text").get(default=None),
         "full_service_history": response.css("dt:contains('Full service history') + dd::text").get(default=None),
-        "non-smoker": response.css("dt:contains('Non-smoker vehicle') + dd::text").get(default=None),
+        #"non-smoker": response.css("dt:contains('Non-smoker vehicle') + dd::text").get(default=None),
 
         # Technical data
         "engine_size": response.css("dt:contains('Engine size') + dd::text").get(default=None),
@@ -120,4 +120,4 @@ class AutoscoutCarSpider(scrapy.Spider):
     }
 
 # cd scrapy/src
-# scrapy crawl car_listing -o ../../data/raw/car_listing.jsonl
+# scrapy crawl scrape_car_listing -o ../../data/raw/car_listing.jsonl
