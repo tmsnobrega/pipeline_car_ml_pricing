@@ -176,5 +176,6 @@ pyrightconfig.json
 # files generated
 .jsonl
 .csv
+.png
 
 # End of https://www.toptal.com/developers/gitignore/api/python

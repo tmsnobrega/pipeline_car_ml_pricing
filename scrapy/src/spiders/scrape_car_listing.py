@@ -84,7 +84,7 @@ class AutoscoutCarSpider(scrapy.Spider):
         # Vehicle history
         "previous_owners": response.css("dt:contains('Previous owner') + dd::text").get(default=None),
         "full_service_history": response.css("dt:contains('Full service history') + dd::text").get(default=None),
-        #"non-smoker": response.css("dt:contains('Non-smoker vehicle') + dd::text").get(default=None),
+        "non-smoker": response.css("dt:contains('Non-smoker vehicle') + dd::text").get(default=None),
 
         # Technical data
         "engine_size": response.css("dt:contains('Engine size') + dd::text").get(default=None),
