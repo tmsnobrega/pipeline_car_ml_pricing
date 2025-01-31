@@ -1,6 +1,7 @@
 import scrapy
 from datetime import datetime
 from ..utils import load_project_variables
+import json
 
 class AutoscoutCarSpider(scrapy.Spider):
   name = "scrape_car_listing"
@@ -117,7 +118,9 @@ class AutoscoutCarSpider(scrapy.Spider):
         # Metadata
         "listing_url": response.url,
         "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        
     }
-
+    
 # cd scrapy/src
 # scrapy crawl scrape_car_listing -o ../../data/raw/car_listing.jsonl
+  
