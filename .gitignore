@@ -173,9 +173,15 @@ poetry.toml
 # LSP config files
 pyrightconfig.json
 
-# files generated
-.jsonl
-.csv
-.png
+# Ignore all files in these directories
+data/transformation/*
+data/exploration/*
+data/raw/*
+
+# Allow the directories to be tracked (optional, but recommended)
+!data/transformation/.gitkeep
+!data/exploration/.gitkeep
+!data/raw/.gitkeep
+
 
 # End of https://www.toptal.com/developers/gitignore/api/python
