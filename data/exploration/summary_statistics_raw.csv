@@ -1,0 +1,40 @@
+,count,unique,top,freq
+manufacturer,4169,11,Tesla ,744
+car,4169,21,Model 3,678
+description,4169,3032,Long-Range AWD 351pk 75 kWh [ AUTOPILOT+620KM WLTP,30
+price,4169,1240,"€ 29,950.-",57
+lease_price_per_month,3798,415,"€ 376,-",107
+km,4154,3388,10 km,168
+gear_type,4154,3,Automatic,3869
+built_in,4157,112,12/2019,484
+fuel,4169,5,Electric/Gasoline,2423
+engine_power,3772,110,110 kW (150 hp),314
+seller_type,4169,2,Dealer,4039
+body_type,4169,3,Off-Road/Pick-up,2558
+used_or_new,4169,4,Used,3816
+drive_train,3329,3,Front,2538
+seats,4100,3,5,4083
+doors,4141,4,5,3548
+previous_owners,1146,7,1,560
+full_service_history,2310,1,Yes,2310
+non-smoker,332,1,Yes,332
+engine_size,3227,37,"1,477 cc",695
+gears,2454,7,6,1221
+cylinders,3179,5,4,2029
+empty_weight,3999,212,"1,854 kg",406
+emission_class,2567,6,Euro 6,1673
+fuel_consumption,112,32,0.0  l/100 km (comb.),24
+co2_emission,3611,136,0 g/km (comb.),1179
+electric_range,754,61,69 km,108
+car_color,4082,13,Grey,1185
+manufacturer_color,3927,788,Grijs metallic,368
+paint,2966,2,Metallic,2909
+upholstery_color,2777,8,Black,2243
+upholstery,3787,12,Black,2243
+equipment,4113,2685,"['Air conditioning', 'Armrest', 'Automatic climate control', 'Cruise control', 'Electric tailgate', 'Electrical side mirrors', 'Hill Holder', 'Keyless central door lock', 'Leather steering wheel', 'Lumbar support', 'Multi-function steering wheel', 'Navigation system', 'Panorama roof', 'Park Distance Control', 'Parking assist system self-steering', 'Parking assist system sensors front', 'Parking assist system sensors rear', 'Rain sensor', 'Android Auto', 'Apple CarPlay', 'Bluetooth', 'Digital cockpit', 'Digital radio', 'Hands-free equipment', 'Induction charging for smartphones', 'Radio', 'WLAN / WiFi hotspot', 'ABS', 'Adaptive Cruise Control', 'Alarm system', 'Blind spot monitor', 'Daytime running lights', 'Driver drowsiness detection', 'Electronic stability control', 'Emergency brake assistant', 'High beam assist', 'Immobilizer', 'LED Daytime Running Lights', 'LED Headlights', 'Lane departure warning system', 'Traction control', 'Traffic sign recognition', 'Alloy wheels (20"")', 'Automatically dimming interior mirror', 'Roof rack', 'Spoiler', 'Voice Control']",79
+seller_name,4039,1036,Autobedrijf Jan Bogert,147
+active_since,3981,26,Provider on AutoScout24 since 2024,436
+seller_address_1,4169,1137,Wipmolen 3,147
+seller_address_2,4039,918,"4671 HE DINTELOORD, NL",147
+listing_url,4169,3829,https://www.autoscout24.com/offers/audi-a3-sportback-2-0-s3-quattro-s-tronic-310-pk-full-led-gasoline-grey-f0b198e1-1e38-4a52-a2f1-ec4a50f12ce4,3
+timestamp,4169,3991,2025-01-24 20:17:40,3
