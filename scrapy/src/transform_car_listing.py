@@ -135,8 +135,10 @@ def transform_data():
   # Update gear type for eletric cars
   df["gear_type"] = df.apply(lambda row: "Automatic" if row["fuel"] == "Electric" else row["gear_type"], axis=1)
 
-  # Update number of previous owners
+  # Update number of previous owners & used_or_new
   df["previous_owners"] = df.apply(lambda row: 0 if row["used_or_new"] == "New" else row["previous_owners"], axis=1)
+  df.loc[(df["car_age_in_months"] <= 12) & (df["km"] < 1_000), ["previous_owners", "used_or_new"]] = [0, "New"]
+  df["used_or_new"] = df["used_or_new"].apply(lambda x: "Used" if x != "New" else x)
   
   # Update body type labels for SUVs
   df["body_type"] = df["body_type"].replace("Off-Road/Pick-up", "SUV")
@@ -165,7 +167,7 @@ def transform_data():
     "engine_power", "engine_size", "empty_weight", 
     "fuel_consumption", "co2_emission","seller_address_1", 
     "seller_address_2", "manufacturer_color", "non-smoker", 
-    "fuel_consumption_km_per_l", "seats"
+    "fuel_consumption_km_per_l", "seats", "paint"
   ], inplace=True)
 
   # Drop irrelevant rows
@@ -174,6 +176,7 @@ def transform_data():
   df.drop(df[df["fuel"].isin(["Electric/Diesel", None, ""])].index, inplace=True)
   df.drop(df[df["emission_class"].isin(["Euro 4", "Euro 5", "Euro 6c"])].index, inplace=True)
   df.drop(df[(df["fuel"] == "Gasoline") & (df["electric_range"] > 0)].index, inplace=True)
+  
 
   # Drop duplicate rows
   df.sort_values(by="timestamp", inplace=True)
