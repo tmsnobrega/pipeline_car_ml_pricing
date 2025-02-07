@@ -174,14 +174,19 @@ poetry.toml
 pyrightconfig.json
 
 # Ignore all files in these directories
-data/transformation/*
+data/transformed/*
 data/exploration/*
 data/raw/*
 
 # Allow the directories to be tracked (optional, but recommended)
-!data/transformation/.gitkeep
+!data/transformed/.gitkeep
 !data/exploration/.gitkeep
 !data/raw/.gitkeep
 
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
 
 # End of https://www.toptal.com/developers/gitignore/api/python
