@@ -93,6 +93,45 @@ def convert_data_types(df):
   df["timestamp"] = pd.to_datetime(df["timestamp"], format="%Y-%m-%d %H:%M:%S", errors="coerce")
   return df
 
+# # Extract unique equipment features across all cars
+# def extract_equipment_features(df):
+#   all_equipment = set()
+#   df["equipment"].dropna().apply(lambda x: all_equipment.update(x))
+#   equipment_df = df["equipment"].apply(lambda x: {feature: 1 if feature in (x or []) else 0 for feature in all_equipment})
+#   equipment_df = pd.DataFrame(equipment_df.tolist())
+#   df = pd.concat([df, equipment_df], axis=1)
+#   return df
+
+def extract_equipment_features(df):
+  # Define relevant features to keep
+  relevant_features = {
+      # Performance & Driving
+      "Adaptive Cruise Control", "Cruise control", "Sport package", "Sport suspension",
+      "Shift paddles", "Air suspension", "Parking assist system self-steering",
+      "Parking assist system camera", "360° camera", "Trailer hitch", "Hill Holder",
+      # Safety & Driver Assistance
+      "Blind spot monitor", "Lane departure warning system", "Emergency brake assistant",
+      "Traffic sign recognition", "Night view assist", "Headlight washer system",
+      "Heads-up display", "Distance warning system", "Parking assist system sensors front",
+      "Parking assist system sensors rear",
+      # Comfort & Interior
+      "Leather seats", "Seat heating", "Seat ventilation", "Heated steering wheel",
+      "Electrically adjustable seats", "Ambient lighting", "Panorama roof",
+      "Sunroof", "Multi-function steering wheel", "Induction charging for smartphones",
+      "WLAN / WiFi hotspot",
+      # Infotainment & Connectivity
+      "Android Auto", "Apple CarPlay", "Navigation system", "Voice Control",
+      "Digital cockpit", "Touch screen", "Sound system", "Integrated music streaming",
+      "Bluetooth", "USB"
+  }
+  # Convert the 'equipment' list into a dictionary of binary indicators
+  equipment_df = df["equipment"].apply(
+      lambda x: {feature: 1 if feature in (x or []) else 0 for feature in relevant_features}
+  )
+  equipment_df = pd.DataFrame(equipment_df.tolist())
+  df = pd.concat([df, equipment_df], axis=1)
+  return df
+
 ### Apply transformations ###
 def transform_data():
   with open(RAW_FILE_PATH, "r", encoding="utf-8") as file:
@@ -117,6 +156,7 @@ def transform_data():
   df["active_since"] = df["active_since"].apply(extract_year_active_on_autoscout)
   df["seller_address"], df["seller_zip_code"], df["seller_city"] = zip(*df.apply(lambda row: clean_seller_address(row["seller_address_1"], row["seller_address_2"], row["seller_type"]), axis=1))
   df["seller_address_test"] = df.apply(lambda row: merge_seller_address(row["seller_address_1"], row["seller_address_2"]), axis=1)
+  df = extract_equipment_features(df)
   df = convert_data_types(df)
 
 
@@ -152,16 +192,17 @@ def transform_data():
   # Establish min and max thresholds
   df["empty_weight_kg"] = df["empty_weight_kg"].apply(lambda x: x if 1_000 <= x <= 3_000 else None)
   df["km"] = df["km"].apply(lambda x: x if 0 <= x <= 400_000 else None)
-  df["engine_power_hp"] = df["engine_power_hp"].apply(lambda x: x if 70 <= x <= 700 else None)
-
-  ### Drop unnecessary data according to explore_car_listing.py ###
+  df["engine_power_hp"] = df["engine_power_hp"].apply(lambda x: x if 70 <= x <= 700 else None)  
+  
+  ### Drop unnecessary data according to exploration/explore_car_listing.py ###
 
   # Drop irrelevant columns
   df.drop(columns=[
     "engine_power", "engine_size", "empty_weight", 
     "fuel_consumption", "co2_emission","seller_address_1", 
     "seller_address_2", "manufacturer_color", "non-smoker", 
-    "fuel_consumption_km_per_l", "seats", "paint"
+    "fuel_consumption_km_per_l", "seats", "paint", 
+    "equipment"
   ], inplace=True)
 
   # Drop irrelevant rows
