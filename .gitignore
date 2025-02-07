@@ -183,5 +183,10 @@ data/raw/
 !data/exploration/.gitkeep
 !data/raw/.gitkeep
 
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
 
 # End of https://www.toptal.com/developers/gitignore/api/python
