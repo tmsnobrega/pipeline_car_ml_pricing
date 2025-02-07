@@ -1,7 +1,7 @@
 import scrapy
 from datetime import datetime
 from ..utils import load_project_variables
-import json
+#import json
 
 class AutoscoutCarSpider(scrapy.Spider):
   name = "scrape_car_listing"
@@ -112,14 +112,12 @@ class AutoscoutCarSpider(scrapy.Spider):
         # Seller details
         "seller_name": response.css("div.RatingsAndCompanyName_dealer__EaECM div::text").get(default=None),
         "active_since": response.css("span.RatingsAndCompanyName_customerSince__Zf7h4::text").get(default=None),
-        #"seller_address_list": response.css("a.scr-link.Department_link__xMUEe::text").getall(),
         "seller_address_1": response.css("a.scr-link.Department_link__xMUEe::text").getall()[0] if response.css("a.scr-link.Department_link__xMUEe::text").getall() else None,
         "seller_address_2": response.css("a.scr-link.Department_link__xMUEe::text").getall()[3] if len(response.css("a.scr-link.Department_link__xMUEe::text").getall()) > 3 else None,
 
         # Metadata
         "listing_url": response.url,
-        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        
+        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),  
     }
     
 # cd scrapy/src

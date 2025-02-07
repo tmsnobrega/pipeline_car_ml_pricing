@@ -88,9 +88,8 @@ def convert_data_types(df):
   numerical_columns = ["price", "lease_price_per_month", "km", "engine_power", "seats", "engine_size", "gears", "cylinders", "empty_weight", "fuel_consumption", "co2_emission", "electric_range", "fuel_consumption_km_per_l", "previous_owners", "co2_emission_g_per_km"]
   for col in numerical_columns:
     df[col] = pd.to_numeric(df[col], errors="coerce")
-  # Convert 'built_in' to datetime
+  # Convert 'built_in' and 'timestamp' to datetime
   df["built_in"] = pd.to_datetime(df["built_in"], format="%m/%Y", errors="coerce")
-  # Convert "timestamp" to datetime
   df["timestamp"] = pd.to_datetime(df["timestamp"], format="%Y-%m-%d %H:%M:%S", errors="coerce")
   return df
 
@@ -120,16 +119,15 @@ def transform_data():
   df["seller_address_test"] = df.apply(lambda row: merge_seller_address(row["seller_address_1"], row["seller_address_2"]), axis=1)
   df = convert_data_types(df)
 
+
   ### Other transformations and business rules ###
 
   # Calculate car age in months
   df["car_age_in_months"] = df["built_in"].apply(lambda x: (datetime.now().year - x.year) * 12 + datetime.now().month - x.month if pd.notnull(x) else None)
-  # Replace car age equal to -1 with 0
   df["car_age_in_months"] = df["car_age_in_months"].replace(-1, 0)
-  # Filter out rows where car age is negative
   df = df[df["car_age_in_months"] >= 0]
 
-  # Calculate year of registration
+  # Calculate years active on the platform
   df["years_active"] = df["active_since"].apply(lambda x: (datetime.now().year - x) if pd.notnull(x) else None)
 
   # Update gear type for eletric cars
@@ -151,13 +149,9 @@ def transform_data():
   df["co2_emission_g_per_km"] = df.apply(lambda row: 0 if row["fuel"] == "Electric" else row["co2_emission_g_per_km"], axis=1)
   df["co2_emission_g_per_km"] = df.apply(lambda row: None if row["co2_emission_g_per_km"] == 0 and row["fuel"] != "Electric" else row["co2_emission_g_per_km"], axis=1)
 
-  # Update empty weight thresholds
+  # Establish min and max thresholds
   df["empty_weight_kg"] = df["empty_weight_kg"].apply(lambda x: x if 1_000 <= x <= 3_000 else None)
-
-  # Update km thresholds
   df["km"] = df["km"].apply(lambda x: x if 0 <= x <= 400_000 else None)
-
-  # Update engine power thresholds
   df["engine_power_hp"] = df["engine_power_hp"].apply(lambda x: x if 70 <= x <= 700 else None)
 
   ### Drop unnecessary data according to explore_car_listing.py ###
@@ -176,11 +170,11 @@ def transform_data():
   df.drop(df[df["fuel"].isin(["Electric/Diesel", None, ""])].index, inplace=True)
   df.drop(df[df["emission_class"].isin(["Euro 4", "Euro 5", "Euro 6c"])].index, inplace=True)
   df.drop(df[(df["fuel"] == "Gasoline") & (df["electric_range"] > 0)].index, inplace=True)
-  
+  df.drop(df[df["car"].isin(["UX 300h", "UX 300e"])].index, inplace=True)
 
   # Drop duplicate rows
   df.sort_values(by="timestamp", inplace=True)
-  df.drop_duplicates(subset=["km", "price", "manufacturer", "car", "listing_url"], keep="last", inplace=True)
+  df.drop_duplicates(subset=["km", "price", "car", "listing_url"], keep="last", inplace=True)
 
 
   ### Save transformed data as CSV ###
