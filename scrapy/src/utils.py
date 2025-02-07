@@ -18,7 +18,7 @@ def load_project_variables():
             "honda": ["civic", "hr-v"],
             "hyundai": ["tucson"],
             "kia": ["ev6", "niro"],
-            "lexus": ["ux-series-(all)"],
+            "lexus": ["ux-250h"],
             "lynk-&-co": ["01"],
             "mazda": ["3", "cx-30"],
             "tesla": ["model-3", "model-y"],
