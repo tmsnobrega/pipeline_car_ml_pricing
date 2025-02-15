@@ -37,38 +37,6 @@ def convert_fuel_consumption(text):
     return round(100 / liters_per_100km, 2) if liters_per_100km else None
   return None
 
-# Clean seller address
-def clean_seller_address(seller_address_1, seller_address_2, seller_type):
-  if seller_type == "Private seller":
-    if not isinstance(seller_address_1, str):
-      return "", None, None  # Handle missing values
-
-    # Match patterns like '5384Da Schaijk, NL'
-    match = re.match(r"([\d\w\s-]+)\s+([A-Za-zÀ-ÿ'\-\s]+),?\s*NL", seller_address_1.strip(), re.IGNORECASE)
-
-    if match:
-      seller_zip_code = match.group(1).strip()
-      seller_city = match.group(2).strip()
-      return "", seller_zip_code, seller_city
-
-    return "", None, None
-
-  elif seller_type == "Dealer":
-    if not isinstance(seller_address_1, str) or not isinstance(seller_address_2, str):
-      return None, None, None  # Handle missing values
-
-    # Extract ZIP code and city from seller_address_2 (format: "1234 AB City, NL")
-    match = re.match(r"([\d\w\s-]+)\s+([A-Za-zÀ-ÿ'\-\s]+),?\s*NL", seller_address_2.strip(), re.IGNORECASE)
-
-    if match:
-      seller_zip_code = match.group(1).strip()  # Extract ZIP
-      seller_city = match.group(2).strip()  # Extract city name
-      return seller_address_1.strip(), seller_zip_code, seller_city
-
-    return seller_address_1.strip(), None, None  # Default case when no match is found
-
-  return seller_address_1, None, None  # Default case for other seller types
-
 # Merge seller address data and trim spaces
 def merge_seller_address(seller_address_1, seller_address_2):
   if seller_address_1 and seller_address_2:
@@ -93,8 +61,8 @@ def convert_data_types(df):
   df["timestamp"] = pd.to_datetime(df["timestamp"], format="%Y-%m-%d %H:%M:%S", errors="coerce")
   return df
 
-# # Extract unique equipment features across all cars
-# def extract_equipment_features(df):
+# # Extract all unique equipment features across all cars
+# def extract_all_equipment_features(df):
 #   all_equipment = set()
 #   df["equipment"].dropna().apply(lambda x: all_equipment.update(x))
 #   equipment_df = df["equipment"].apply(lambda x: {feature: 1 if feature in (x or []) else 0 for feature in all_equipment})
@@ -103,34 +71,54 @@ def convert_data_types(df):
 #   return df
 
 def extract_equipment_features(df):
-  # Define relevant features to keep
+  # Define relevant features to keep based on your refined list, grouped under specific categories
   relevant_features = {
-      # Performance & Driving
-      "Adaptive Cruise Control", "Cruise control", "Sport package", "Sport suspension",
-      "Shift paddles", "Air suspension", "Parking assist system self-steering",
-      "Parking assist system camera", "360° camera", "Trailer hitch", "Hill Holder",
-      # Safety & Driver Assistance
-      "Blind spot monitor", "Lane departure warning system", "Emergency brake assistant",
-      "Traffic sign recognition", "Night view assist", "Headlight washer system",
-      "Heads-up display", "Distance warning system", "Parking assist system sensors front",
-      "Parking assist system sensors rear",
-      # Comfort & Interior
-      "Leather seats", "Seat heating", "Seat ventilation", "Heated steering wheel",
-      "Electrically adjustable seats", "Ambient lighting", "Panorama roof",
-      "Sunroof", "Multi-function steering wheel", "Induction charging for smartphones",
-      "WLAN / WiFi hotspot",
-      # Infotainment & Connectivity
-      "Android Auto", "Apple CarPlay", "Navigation system", "Voice Control",
-      "Digital cockpit", "Touch screen", "Sound system", "Integrated music streaming",
-      "Bluetooth", "USB"
+    "360° camera", 
+    "Adaptive Cruise Control",  
+    "Ambient lighting", 
+    "Android Auto", 
+    "Apple CarPlay", 
+    "Armrest", 
+    "Blind spot monitor", 
+    "Bluetooth", 
+    "Distance warning system", 
+    "Electrically adjustable seats", 
+    "Electrically heated windshield", 
+    "Electronic parking brake", 
+    "Emergency brake assistant",
+    "Induction charging for smartphones", 
+    "Keyless central door lock", 
+    "Lane departure warning system", 
+    "Leather seats", 
+    "Navigation system", 
+    "On-board computer", 
+    "Panorama roof",  
+    "Parking assist system camera", 
+    "Parking assist system self-steering", 
+    "Rain sensor", 
+    "Rear airbag", 
+    "Rear seat heating", 
+    "Seat heating", 
+    "Seat ventilation", 
+    "Shift paddles",
+    "Speed limit control system", 
+    "Sport seats", 
+    "Sport suspension",
+    "Start-stop system", 
+    "Sunroof", 
+    "Touch screen",  
+    "Traffic sign recognition",
+    "WLAN / WiFi hotspot", 
+    "Xenon headlights"
   }
   # Convert the 'equipment' list into a dictionary of binary indicators
-  equipment_df = df["equipment"].apply(
-      lambda x: {feature: 1 if feature in (x or []) else 0 for feature in relevant_features}
-  )
+  equipment_df = df["equipment"].apply(lambda x: {feature: 1 if feature in (x or []) else 0 for feature in relevant_features})
+  # Convert the list of dictionaries into a DataFrame
   equipment_df = pd.DataFrame(equipment_df.tolist())
+  # Concatenate the new features with the original DataFrame
   df = pd.concat([df, equipment_df], axis=1)
   return df
+
 
 ### Apply transformations ###
 def transform_data():
@@ -157,8 +145,7 @@ def transform_data():
   df["fuel_consumption_km_per_l"] = df["fuel_consumption"].apply(convert_fuel_consumption)
   df["co2_emission_g_per_km"] = df["co2_emission"].apply(extract_number)
   df["active_since"] = df["active_since"].apply(extract_year_active_on_autoscout)
-  df["seller_address"], df["seller_zip_code"], df["seller_city"] = zip(*df.apply(lambda row: clean_seller_address(row["seller_address_1"], row["seller_address_2"], row["seller_type"]), axis=1))
-  df["seller_address_test"] = df.apply(lambda row: merge_seller_address(row["seller_address_1"], row["seller_address_2"]), axis=1)
+  df["seller_address_merged"] = df.apply(lambda row: merge_seller_address(row["seller_address_1"], row["seller_address_2"]), axis=1)
   df = extract_equipment_features(df)
   df = convert_data_types(df)
 
@@ -191,10 +178,17 @@ def transform_data():
   # Update drive train
   df["drive_train"] = df.apply(lambda row: "4WD" if pd.isna(row["drive_train"]) and any(x in row["description"] for x in ["AWD", "4WD"]) else row["drive_train"], axis=1)
 
+  # Update gear
+  df.loc[df["fuel"] == "Electric", "gears"] = 1 # If a car is eletric, it has 1 gear
+  df.loc[(df["gears"] == 8) & (df["manufacturer"] != "Volvo"), "gears"] = pd.NA # If a car has 8 gears and is not a Volvo, it is set to None
+  df.loc[df["manufacturer"] == "Lynk & Co", "gears"] = 7 # If manufacturer is Lynk & Co, gears is set to 7
+  df.loc[df["car"] == "Niro", "gears"] = 6 # If car is Niro, gears is set to 6
+  df.loc[df["gears"] > 8, "gears"] = pd.NA # If a car has more than 8 gears, it is set to None
+  df.loc[df["gears"].isin([2, 3, 4]), "gears"] = pd.NA # If a car has 2, 3 or 4 gears, it is set to None
+
   # Update labels
   df["body_type"] = df["body_type"].replace("Off-Road/Pick-up", "SUV")
   df["fuel"] = df["fuel"].replace("Electric/Gasoline", "Hybrid")
-
 
   # Update co2 emission depeding on the fuel type
   df["co2_emission_g_per_km"] = df.apply(lambda row: 0 if row["fuel"] == "Electric" else row["co2_emission_g_per_km"], axis=1) # If a car is eletric, it has 0 co2 emission
@@ -206,10 +200,10 @@ def transform_data():
   # Drop irrelevant columns
   df.drop(columns=[
     "engine_power", "engine_size", "empty_weight", 
-    "fuel_consumption", "co2_emission","seller_address_1", 
-    "seller_address_2", "manufacturer_color", "non-smoker", 
-    "fuel_consumption_km_per_l", "seats", "paint", 
-    "equipment"
+    "fuel_consumption", "co2_emission", "manufacturer_color", 
+    "non-smoker", "fuel_consumption_km_per_l", "seats", 
+    "paint", "equipment", "doors",
+    #"seller_address_1", "seller_address_2",
   ], inplace=True)
 
   # Drop irrelevant rows
@@ -224,13 +218,11 @@ def transform_data():
   df.drop(df[(df["manufacturer"] == "Toyota") & (df["fuel"] != "Hybrid")].index, inplace=True) # Only keep Toyota hybrid cars
   df.drop(df[(df["fuel"] == "Diesel") & (df["car"] != "A3")].index, inplace=True) # Only keep Audi A3 Diesel cars as there are not enough data entries for other Diesel cars
   df.drop(df[df["car"].isin(["UX 300h", "UX 300e"])].index, inplace=True) # Not enought data entries for these Lexus models
-
   print(f"\tRows after applying filters: {len(df)}")
 
   # Drop duplicate rows
   df.sort_values(by="timestamp", inplace=True)
   df.drop_duplicates(subset=["km", "price", "car", "listing_url"], keep="last", inplace=True)
-
   print(f"\tRows after dropping duplicates: {len(df)}")
 
   ### Save transformed data as CSV ###
