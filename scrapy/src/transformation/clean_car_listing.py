@@ -52,15 +52,15 @@ def extract_zip_code(df):
     return match.group().replace(" ", "").upper() if match else None
   
   # Initialize the column for zip code
-  df['seller_zip_code'] = None
+  df['zip_code'] = None
   
   # Handle rows where seller_type is "Private seller"
   private_seller_filter = df['seller_type'] == "Private seller"
-  df.loc[private_seller_filter, 'seller_zip_code'] = df.loc[private_seller_filter, 'seller_address_1'].apply(extract_zip)
+  df.loc[private_seller_filter, 'zip_code'] = df.loc[private_seller_filter, 'seller_address_1'].apply(extract_zip)
   
   # Handle rows where seller_type is "Dealer"
   dealer_filter = df['seller_type'] == "Dealer"
-  df.loc[dealer_filter, 'seller_zip_code'] = df.loc[dealer_filter, 'seller_address_2'].apply(extract_zip)
+  df.loc[dealer_filter, 'zip_code'] = df.loc[dealer_filter, 'seller_address_2'].apply(extract_zip)
 
   return df
 
@@ -145,7 +145,7 @@ def clean_data():
   ], inplace=True)
 
   # Drop irrelevant rows according to exploration/explore_car_listing.py
-  df.dropna(subset=["manufacturer", "car", "price", "km", "gear_type", "built_in", "fuel", "body_type", "seller_zip_code"], inplace=True)
+  df.dropna(subset=["manufacturer", "car", "price", "km", "gear_type", "built_in", "fuel", "body_type", "zip_code"], inplace=True)
   df.drop(df[df["gear_type"] == "Semi-automatic"].index, inplace=True)
   df.drop(df[df["fuel"] == "Electric/Diesel"].index, inplace=True)
   df.drop(df[df["emission_class"].isin(["Euro 4", "Euro 5", "Euro 6c"])].index, inplace=True)
