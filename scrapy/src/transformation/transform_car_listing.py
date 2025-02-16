@@ -2,14 +2,105 @@ import pandas as pd
 import os
 from datetime import datetime, timedelta
 import numpy as np
+import requests
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()  
+GEONAMES_USERNAME = os.getenv("GEONAMES_USERNAME")
 
 # Define paths
 TRANSFORMED_FOLDER_PATH = "data/transformed"
 
+# Function to fetch Geonames data
+def fetch_geonames_data(zip_code):
+  url = "http://api.geonames.org/postalCodeLookupJSON"
+  params = {
+    "postalcode": zip_code,
+    "country": "NL",
+    "username": GEONAMES_USERNAME
+  }
+
+  response = requests.get(url, params=params)
+  if response.status_code == 200:
+    data = response.json()
+    if "postalcodes" in data and len(data["postalcodes"]) > 0:
+      place = data["postalcodes"][0]
+      return {
+        "lon": place.get("lng"),
+        "lat": place.get("lat"),
+        "city": place.get("placeName"),
+        "province": place.get("adminName1")
+      }
+    else:
+      return {"lon": None, "lat": None, "city": None, "province": None}
+  else:
+    print(f"Error: {response.status_code}")
+    return {"lon": None, "lat": None, "city": None, "province": None}
+
+# Function to add Geonames data to DataFrame
+def add_geonames_data(df):
+  # Initialize empty lists for new columns
+  lon_list, lat_list, city_list, province_list = [], [], [], []
+
+  # Load existing geonames data from file if it exists
+  geonames_cache_file = os.path.join(TRANSFORMED_FOLDER_PATH, "geonames_cache.csv")
+  if os.path.exists(geonames_cache_file):
+    geonames_cache_df = pd.read_csv(geonames_cache_file)
+    geonames_cache = geonames_cache_df.set_index('zip_code').T.to_dict('dict')
+  else:
+    geonames_cache = {}
+
+  zip_codes = df["zip_code"].unique()
+
+  # Fetch data for new zip codes and update the cache
+  new_data = []
+  for zip_code in zip_codes:
+    if zip_code not in geonames_cache:
+      geonames_data = fetch_geonames_data(zip_code)
+      geonames_cache[zip_code] = geonames_data
+      new_data.append({
+        "zip_code": zip_code,
+        "lon": geonames_data["lon"],
+        "lat": geonames_data["lat"],
+        "city": geonames_data["city"],
+        "province": geonames_data["province"]
+      })
+
+  # Save the updated geonames cache to file
+  if new_data:
+    new_data_df = pd.DataFrame(new_data)
+    if os.path.exists(geonames_cache_file):
+      new_data_df.to_csv(geonames_cache_file, mode='a', header=False, index=False)
+    else:
+      new_data_df.to_csv(geonames_cache_file, index=False)
+
+  # Populate lists with geonames data
+  for zip_code in df["zip_code"]:
+    if pd.notnull(zip_code) and zip_code in geonames_cache:
+      geonames_data = geonames_cache[zip_code]
+      lon_list.append(geonames_data["lon"])
+      lat_list.append(geonames_data["lat"])
+      city_list.append(geonames_data["city"])
+      province_list.append(geonames_data["province"])
+    else:
+      lon_list.append(None)
+      lat_list.append(None)
+      city_list.append(None)
+      province_list.append(None)
+
+  # Add new columns to the DataFrame
+  df["lon"] = lon_list
+  df["lat"] = lat_list
+  df["city"] = city_list
+  df["province"] = province_list
+
+  return df
+
 ### Apply transformations ###
 def transform_data():
   print("Initiating data transformation...")
-  df = pd.read_csv(os.path.join(TRANSFORMED_FOLDER_PATH, "cleaned_car_listing.csv"))
+  df = pd.read_csv(os.path.join(TRANSFORMED_FOLDER_PATH, "cleaned_car_listing.csv")) # Load cleaned data
 
   print(f"\tRows before any transformations: {len(df)}")
 
@@ -69,6 +160,11 @@ def transform_data():
   df.drop(df[(df["fuel"] == "Diesel") & (df["car"] != "A3")].index, inplace=True) # Only keep Audi A3 Diesel cars as there are not enough data entries for other Diesel cars
   df.drop(df[df["car"].isin(["UX 300h", "UX 300e"])].index, inplace=True) # Not enought data entries for these Lexus models
   
+  # Create dataframe for zip_code
+  if "zip_code" in df.columns:
+    print("\tAdding Geonames data based on zip_code...")
+    df = add_geonames_data(df)
+
   ### Save transformed data as CSV ###
   df.to_csv(os.path.join(TRANSFORMED_FOLDER_PATH, "transformed_car_listing.csv"), index=False)
   print("\tData transformation completed!")
