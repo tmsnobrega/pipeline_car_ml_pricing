@@ -149,7 +149,7 @@ def transform_data():
   df["co2_emission_g_per_km"] = df.apply(lambda row: None if row["co2_emission_g_per_km"] == 0 and row["fuel"] != "Electric" else row["co2_emission_g_per_km"], axis=1) # If a car is not eletric and has 0 co2 emission, it is set to None
 
   # Calculate years active on the platform
-  df["years_active"] = df["active_since"].apply(lambda x: (datetime.now().year - x) if pd.notnull(x) else None)
+  df["years_active_on_platform"] = df["active_since"].apply(lambda x: (datetime.now().year - x) if pd.notnull(x) else None)
 
   # Drop irrelevant rows
   df.drop(df[(df["fuel"] == "Gasoline") & (df["electric_range"] > 0)].index, inplace=True) # Drop rows where electric_range is greater than 0 and the fuel is Gasoline
@@ -159,11 +159,29 @@ def transform_data():
   df.drop(df[(df["manufacturer"] == "Toyota") & (df["fuel"] != "Hybrid")].index, inplace=True) # Only keep Toyota hybrid cars
   df.drop(df[(df["fuel"] == "Diesel") & (df["car"] != "A3")].index, inplace=True) # Only keep Audi A3 Diesel cars as there are not enough data entries for other Diesel cars
   df.drop(df[df["car"].isin(["UX 300h", "UX 300e"])].index, inplace=True) # Not enought data entries for these Lexus models
+
+  # Drop irrelevant columns
+  df.drop(["active_since", "description"], axis=1, inplace=True) 
   
   # Create dataframe for zip_code
   if "zip_code" in df.columns:
     print("\tAdding Geonames data based on zip_code...")
     df = add_geonames_data(df)
+
+  # Reorganizing a few columns
+  columns = df.columns.tolist()
+  columns.insert(columns.index("built_in") + 1, columns.pop(columns.index("car_age_in_months")))
+  columns.append(columns.pop(columns.index("seller_type")))
+  columns.append(columns.pop(columns.index("seller_name")))
+  columns.append(columns.pop(columns.index("years_active_on_platform")))
+  columns.append(columns.pop(columns.index("zip_code")))
+  columns.append(columns.pop(columns.index("city")))
+  columns.append(columns.pop(columns.index("province")))
+  columns.append(columns.pop(columns.index("lat")))
+  columns.append(columns.pop(columns.index("lon")))
+  columns.append(columns.pop(columns.index("listing_url")))
+  columns.append(columns.pop(columns.index("timestamp")))
+  df = df[columns]
 
   ### Save transformed data as CSV ###
   df.to_csv(os.path.join(TRANSFORMED_FOLDER_PATH, "transformed_car_listing.csv"), index=False)
