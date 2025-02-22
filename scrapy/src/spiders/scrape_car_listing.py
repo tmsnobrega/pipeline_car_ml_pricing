@@ -5,7 +5,7 @@ def load_project_variables():
   # Returns project variables as a dictionary.
   return {
     "MAX_PAGES": 20,
-    "AD_AGE": 1,
+    "AD_AGE": 2,
     "PRICE_FROM": 5000,
     "PRICE_TO": 75000,
     "YEAR_FROM": 2016,

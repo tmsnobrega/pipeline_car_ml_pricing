@@ -66,9 +66,7 @@ def extract_zip_code(df):
 
 def extract_equipment_features(df):
   # Define relevant features to keep based on your refined list, grouped under specific categories
-  relevant_features = {
-    "360° camera", "Adaptive Cruise Control", "Ambient lighting", "Android Auto", "Apple CarPlay", "Armrest", "Blind spot monitor", "Bluetooth", "Distance warning system", "Electrically adjustable seats", "Electrically heated windshield", "Electronic parking brake", "Emergency brake assistant", "Induction charging for smartphones", "Keyless central door lock", "Lane departure warning system", "Leather seats", "Navigation system", "On-board computer", "Panorama roof", "Parking assist system camera", "Parking assist system self-steering", "Rain sensor", "Rear airbag", "Rear seat heating", "Seat heating", "Seat ventilation", "Shift paddles", "Speed limit control system", "Sport seats", "Sport suspension", "Start-stop system", "Sunroof", "Touch screen", "Traffic sign recognition", "WLAN / WiFi hotspot", "Xenon headlights"
-  }
+  relevant_features = {"360° camera", "Adaptive Cruise Control", "Ambient lighting", "Android Auto", "Apple CarPlay", "Armrest", "Blind spot monitor", "Bluetooth", "Distance warning system", "Electrically adjustable seats", "Electrically heated windshield", "Electronic parking brake", "Emergency brake assistant", "Induction charging for smartphones", "Keyless central door lock", "Lane departure warning system", "Leather seats", "Navigation system", "On-board computer", "Panorama roof", "Parking assist system camera", "Parking assist system self-steering", "Rain sensor", "Rear airbag", "Rear seat heating", "Seat heating", "Seat ventilation", "Shift paddles", "Speed limit control system", "Sport seats", "Sport suspension", "Start-stop system", "Sunroof", "Touch screen", "Traffic sign recognition", "WLAN / WiFi hotspot", "Xenon headlights"}
 
   # Convert the 'equipment' list into a dictionary of binary indicators
   equipment_df = df["equipment"].apply(lambda x: {feature: 1 if feature in (x or []) else 0 for feature in relevant_features})
@@ -141,7 +139,7 @@ def clean_data():
     "fuel_consumption", "co2_emission", "manufacturer_color", 
     "non-smoker", "fuel_consumption_km_per_l", "seats", 
     "paint", "equipment", "doors",
-    "seller_address_1", "seller_address_2", 
+    "seller_address_1", "seller_address_2", "upholstery_color"
   ], inplace=True)
 
   # Drop irrelevant rows according to exploration/explore_car_listing.py
@@ -149,7 +147,7 @@ def clean_data():
   df.drop(df[df["gear_type"] == "Semi-automatic"].index, inplace=True)
   df.drop(df[df["fuel"] == "Electric/Diesel"].index, inplace=True)
   df.drop(df[df["emission_class"].isin(["Euro 4", "Euro 5", "Euro 6c"])].index, inplace=True)
-  print(f"\tRows after applying filters: {len(df)}")
+  print(f"\tRows after applying cleaning filters: {len(df)}")
 
   # Drop duplicate rows
   df.sort_values(by="timestamp", inplace=True)
