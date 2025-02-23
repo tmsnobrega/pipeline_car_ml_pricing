@@ -160,8 +160,8 @@ def transform_data():
   df.drop(df[(df["fuel"] == "Diesel") & (df["car"] != "A3")].index, inplace=True) # Only keep Audi A3 Diesel cars as there are not enough data entries for other Diesel cars
   df.drop(df[df["car"].isin(["UX 300h", "UX 300e"])].index, inplace=True) # Not enought data entries for these Lexus models
 
-  # Drop irrelevant columns
-  df.drop(["active_since", "description"], axis=1, inplace=True) 
+  # Drop irrelevant columns for future analysis
+  df.drop(["active_since", "description", "previous_owners", "electric_range"], axis=1, inplace=True) 
   
   # Create dataframe for zip_code
   if "zip_code" in df.columns:
