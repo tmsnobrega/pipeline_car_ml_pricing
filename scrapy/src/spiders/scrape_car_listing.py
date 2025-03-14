@@ -5,7 +5,7 @@ def load_project_variables():
   # Returns project variables as a dictionary.
   return {
     "MAX_PAGES": 20,
-    "AD_AGE": 2,
+    "AD_AGE": 3,
     "PRICE_FROM": 5000,
     "PRICE_TO": 75000,
     "YEAR_FROM": 2016,
@@ -24,7 +24,7 @@ def load_project_variables():
     }
   }
 
-class AutoscoutCarSpider(scrapy.Spider):
+class CarListingSpider(scrapy.Spider):
   name = "scrape_car_listing"
 
   # Load settings as a dictionary
