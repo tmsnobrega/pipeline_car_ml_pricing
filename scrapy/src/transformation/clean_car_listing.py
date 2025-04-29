@@ -93,6 +93,30 @@ def convert_data_types(df):
 
   return df
 
+# Fix merged manufacturer + car issues
+KNOWN_MANUFACTURERS = [
+  "Lynk & Co", "CUPRA", "Hyundai", "Toyota", "Mazda",
+  "Volvo", "Tesla", "Honda", "Kia", "Audi", "Lexus"
+]
+KNOWN_MANUFACTURERS = sorted(KNOWN_MANUFACTURERS, key=len, reverse=True)
+
+# The structure of the website changed, and the car name is now in the 'manufacturer' column
+# This function splits the 'manufacturer' column into 'manufacturer' and 'car' again
+def fix_merged_manufacturer_model(df):
+  def split_manufacturer(row):
+    manufacturer = row.get('manufacturer')
+    car = row.get('car')
+
+    if pd.isnull(car) and isinstance(manufacturer, str):
+      for brand in KNOWN_MANUFACTURERS:
+        if manufacturer.startswith(brand):
+          model = manufacturer[len(brand):].strip()
+          return pd.Series([brand, model])
+    return pd.Series([manufacturer, car])
+
+  df[['manufacturer', 'car']] = df.apply(split_manufacturer, axis=1)
+  return df
+
 
 ### Apply data cleaning rules ###
 def clean_data():
@@ -122,6 +146,7 @@ def clean_data():
   df = extract_zip_code(df)
   df = extract_equipment_features(df)
   df = convert_data_types(df)
+  df = fix_merged_manufacturer_model(df)
 
 
   ### Other cleanings and business rules ###

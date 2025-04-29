@@ -5,7 +5,7 @@ def load_project_variables():
   # Returns project variables as a dictionary.
   return {
     "MAX_PAGES": 20,
-    "AD_AGE": 3,
+    "AD_AGE": 7,
     "PRICE_FROM": 5000,
     "PRICE_TO": 75000,
     "YEAR_FROM": 2016,
@@ -80,7 +80,7 @@ class CarListingSpider(scrapy.Spider):
     yield {
         # Vehicle information
         "manufacturer": response.css("span.StageTitle_boldClassifiedInfo__sQb0l::text").get(default=None),
-        "car": response.css("span.StageTitle_model__EbfjC.StageTitle_boldClassifiedInfo__sQb0l::text").get(default=None),
+        #"car": response.css("span.StageTitle_model__EbfjC.StageTitle_boldClassifiedInfo__sQb0l::text").get(default=None), # Website structure changed
         "description": response.css("div.StageTitle_modelVersion__Yof2Z::text").get(default=None),
         "price": response.css("span.PriceInfo_price__XU0aF::text").get(default=None),
         "lease_price_per_month": response.css("div.FinancialLeaseStage_rate__h8aCR span:nth-child(2)::text").get(default=None),
