@@ -1,40 +1,40 @@
 ,count,unique,top,freq
-manufacturer,6931,11,Tesla ,1269
-car,6931,21,Model 3,1144
-description,6931,4620,Long-Range AWD 351pk 75 kWh [ AUTOPILOT+620KM WLTP,50
-price,6931,1590,"€ 29,950.-",84
-lease_price_per_month,6354,454,"€ 348,-",157
-km,6915,5207,10 km,298
-gear_type,6914,3,Automatic,6448
-built_in,6916,116,12/2019,834
-fuel,6931,5,Electric/Gasoline,3968
-engine_power,6295,125,258 kW (351 hp),499
-seller_type,6931,2,Dealer,6734
-body_type,6931,3,Off-Road/Pick-up,4315
-used_or_new,6931,4,Used,6312
-drive_train,5606,3,Front,4209
-seats,6830,3,5,6806
-doors,6889,4,5,5917
-previous_owners,1890,7,1,943
-full_service_history,3964,1,Yes,3964
-non-smoker,620,1,Yes,620
-engine_size,5337,38,"1,477 cc",1193
-gears,4077,7,6,1993
-cylinders,5270,5,4,3340
-empty_weight,6667,230,"1,831 kg",600
-emission_class,4243,6,Euro 6,2707
-fuel_consumption,181,37,0.0  l/100 km (comb.),38
-co2_emission,6025,146,0 g/km (comb.),2019
-electric_range,1212,68,69 km,146
-car_color,6785,13,Grey,2003
-manufacturer_color,6552,1064,Grijs metallic,597
-paint,4861,2,Metallic,4767
-upholstery_color,4630,8,Black,3746
-upholstery,6281,12,Black,3746
-equipment,6859,3996,"['Air conditioning', 'Armrest', 'Automatic climate control', 'Cruise control', 'Electric tailgate', 'Electrical side mirrors', 'Hill Holder', 'Keyless central door lock', 'Leather steering wheel', 'Lumbar support', 'Multi-function steering wheel', 'Navigation system', 'Panorama roof', 'Park Distance Control', 'Parking assist system self-steering', 'Parking assist system sensors front', 'Parking assist system sensors rear', 'Rain sensor', 'Android Auto', 'Apple CarPlay', 'Bluetooth', 'Digital cockpit', 'Digital radio', 'Hands-free equipment', 'Induction charging for smartphones', 'Radio', 'WLAN / WiFi hotspot', 'ABS', 'Adaptive Cruise Control', 'Alarm system', 'Blind spot monitor', 'Daytime running lights', 'Driver drowsiness detection', 'Electronic stability control', 'Emergency brake assistant', 'High beam assist', 'Immobilizer', 'LED Daytime Running Lights', 'LED Headlights', 'Lane departure warning system', 'Traction control', 'Traffic sign recognition', 'Alloy wheels (20"")', 'Automatically dimming interior mirror', 'Roof rack', 'Spoiler', 'Voice Control']",120
-seller_name,6734,1272,Autobedrijf Jan Bogert,277
-active_since,6647,26,Provider on AutoScout24 since 2024,798
-seller_address_1,6931,1418,Wipmolen 3,277
-seller_address_2,6734,1123,"4671 HE DINTELOORD, NL",277
-listing_url,6932,6051,https://www.autoscout24.com/offers/audi-a4-limousine-1-4-tfsi-sport-lease-edition-gasoline-blue-795b7865-2f3a-4073-92e8-61af45aaa918,4
-timestamp,6932,6629,2025-01-24 20:17:40,3
+manufacturer,28456,30,Volvo XC40,2432
+car,8480,21,Model 3,1418
+description,28447,14992,Standard RWD Plus [ AUTOPILOT+60 kWh+PREMIUM AUDIO,147
+price,28456,4061,"€ 29,950.-",327
+lease_price_per_month,26129,605,"€ 348,-",643
+km,28411,16515,10 km,1070
+gear_type,28427,3,Automatic,26340
+built_in,28435,118,12/2019,1973
+fuel,28451,6,Electric/Gasoline,16610
+engine_power,25840,193,85 kW (116 hp),2013
+seller_type,28456,2,Dealer,27570
+body_type,28456,3,Off-Road/Pick-up,18743
+used_or_new,28456,4,Used,26045
+drive_train,23176,3,Front,17725
+seats,27948,4,5,27804
+doors,28365,4,5,24428
+previous_owners,7220,7,1,3688
+full_service_history,16257,1,Yes,16257
+non-smoker,3061,1,Yes,3061
+engine_size,22774,54,"1,477 cc",5010
+gears,17176,9,6,8246
+cylinders,22608,7,4,14457
+empty_weight,27278,333,"1,854 kg",2449
+emission_class,18157,8,Euro 6,11071
+fuel_consumption,754,56,0.0  l/100 km (comb.),152
+co2_emission,24220,166,0 g/km (comb.),7459
+electric_range,5247,99,69 km,740
+car_color,27872,13,Grey,8081
+manufacturer_color,26933,2350,Grijs metallic,2281
+paint,19886,2,Metallic,19462
+upholstery_color,18301,10,Black,14465
+upholstery,25803,14,Black,14465
+equipment,28188,12706,"['Air conditioning', 'Armrest', 'Automatic climate control', 'Cruise control', 'Electric tailgate', 'Electrical side mirrors', 'Hill Holder', 'Keyless central door lock', 'Leather steering wheel', 'Lumbar support', 'Multi-function steering wheel', 'Navigation system', 'Panorama roof', 'Park Distance Control', 'Parking assist system self-steering', 'Parking assist system sensors front', 'Parking assist system sensors rear', 'Rain sensor', 'Android Auto', 'Apple CarPlay', 'Bluetooth', 'Digital cockpit', 'Digital radio', 'Hands-free equipment', 'Induction charging for smartphones', 'Radio', 'WLAN / WiFi hotspot', 'ABS', 'Adaptive Cruise Control', 'Alarm system', 'Blind spot monitor', 'Daytime running lights', 'Driver drowsiness detection', 'Electronic stability control', 'Emergency brake assistant', 'High beam assist', 'Immobilizer', 'LED Daytime Running Lights', 'LED Headlights', 'Lane departure warning system', 'Traction control', 'Traffic sign recognition', 'Alloy wheels (20"")', 'Automatically dimming interior mirror', 'Roof rack', 'Spoiler', 'Voice Control']",421
+seller_name,27570,2084,Autobedrijf Jan Bogert,786
+active_since,27402,26,Provider on AutoScout24 since 2024,3549
+seller_address_1,28456,2612,Wipmolen 3,786
+seller_address_2,27570,1806,"4671 HE DINTELOORD, NL",786
+listing_url,28459,21487,https://www.autoscout24.com/offers/honda-civic-1-0-i-vtec-comfort-stoelverwarming-climate-con-gasoline-black-03467e0a-525b-4ea7-b191-bc3dca2b143d,9
+timestamp,28459,27236,2025-02-21 14:12:58,3
