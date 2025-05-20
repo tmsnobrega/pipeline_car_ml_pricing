@@ -174,9 +174,9 @@ poetry.toml
 pyrightconfig.json
 
 # Ignore all files in these directories
-# data/transformed/*
-# data/exploration/*
-# data/raw/*
+data/transformed/*
+data/exploration/*
+data/raw/*
 
 # Allow the directories to be tracked
 !data/transformed/.gitkeep
