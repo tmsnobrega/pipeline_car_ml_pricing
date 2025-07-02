@@ -189,7 +189,4 @@ data/raw/*
 # Windows
 Thumbs.db
 
-# Ignore archive functions
-archive.py
-
 # End of https://www.toptal.com/developers/gitignore/api/python
