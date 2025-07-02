@@ -47,9 +47,10 @@ def extract_year_active_on_autoscout(text):
 def extract_zip_code(df):
 
   def extract_zip(address):
-    # Match complete Dutch zip code patterns (e.g., "1234AB")
-    match = re.search(r'\b\d{4}\s?[A-Za-z]{2}\b', address, re.IGNORECASE)
-    return match.group().replace(" ", "").upper() if match else None
+      if not isinstance(address, str):
+          return None
+      match = re.search(r'\b\d{4}\s?[A-Za-z]{2}\b', address, re.IGNORECASE)
+      return match.group() if match else None
   
   # Initialize the column for zip code
   df['zip_code'] = None
